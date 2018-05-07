@@ -121,7 +121,11 @@ fileprivate class ImageLibraryFlow {
         }
         
         builder.add(state: .requesting) { event in
-            switch PHPhotoLibrary.authorizationStatus() {
+            guard case .status(let status) = event.name else {
+                return .stay
+            }
+            
+            switch status {
             case .authorized:
                 return .run(.loading, event)
             case .notDetermined:
